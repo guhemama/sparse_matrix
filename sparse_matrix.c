@@ -209,9 +209,9 @@ void print(SparseMatrix* matrix)
   int i, j;
 
   long curY
-     , prevY = 1
+     , prevY = 0
      , curX
-     , prevX = 1
+     , prevX = 0
      , xDiff
      , yDiff
      , counter;
@@ -228,7 +228,7 @@ void print(SparseMatrix* matrix)
       {
         for (j = 0; j < matrix->_maximumX; j++)
         {
-          printf("0 ");
+          printf("0\t");
         }
 
         printf("\n");
@@ -250,26 +250,26 @@ void print(SparseMatrix* matrix)
           // Senáo, imprime zeros restantes
           for (i = 0; i < xDiff; i++)
           {
-            printf("0 ");
+            printf("0\t");
           }
         }
 
-        prevX = 1;
+        prevX = 0;
         break;
       }
       else
       {
-        xDiff = cell->_x - prevX;
+        xDiff = cell->_x - prevX - 1;
 
-        if (xDiff > 1)
+        if (xDiff > 0)
         {
           for (i = 0; i < xDiff; i++)
           {
-            printf("0 ");
+            printf("0\t");
           }
         }
 
-        printf("%lu ", cell->_value);
+        printf("%ld\t", cell->_value);
 
         prevX = cell->_x;
         cell  = cell->_nextCell;
@@ -283,8 +283,127 @@ void print(SparseMatrix* matrix)
   }
 }
 
-SparseMatrix* sum(SparseMatrix* m1, SparseMatrix* m2);
-SparseMatrix* subtract(SparseMatrix* m1, SparseMatrix* m2);
-SparseMatrix* transpose(SparseMatrix* matrix);
+/**
+ * Soma duas matrizes, desde que com dimensões iguais
+ * @param  m1 [description]
+ * @param  m2 [description]
+ * @return    [description]
+ */
+SparseMatrix* sum(SparseMatrix* m1, SparseMatrix* m2)
+{
+  if (m1->_maximumX != m2->_maximumX || m1->_maximumY != m2->_maximumY)
+  {
+    printf("As matrizes a serem somadas devem ter o mesmo número de linhas e colunas.\n");
+    exit(1);
+  }
+
+  SparseMatrix* matrix = newSparseMatrix();
+
+  long x, y, sum;
+
+  for (x = 1; x <= m1->_maximumX; x++)
+  {
+    for (y = 1; y <= m1->_maximumY; y++)
+    {
+      sum = getCellValue(m1, x, y) + getCellValue(m2, x, y);
+
+      if (sum != 0)
+      {
+        setCell(matrix, x, y, sum);
+      }
+    }
+
+  }
+
+  return matrix;
+}
+
+/**
+ * Subtrai duas matrizes, desde que com dimensões iguais
+ * @param  m1 [description]
+ * @param  m2 [description]
+ * @return    [description]
+ */
+SparseMatrix* subtract(SparseMatrix* m1, SparseMatrix* m2)
+{
+  if (m1->_maximumX != m2->_maximumX || m1->_maximumY != m2->_maximumY)
+  {
+    printf("As matrizes a serem somadas devem ter o mesmo número de linhas e colunas.\n");
+    exit(1);
+  }
+
+  SparseMatrix* matrix = newSparseMatrix();
+
+  long x, y, diff;
+
+  for (x = 1; x <= m1->_maximumX; x++)
+  {
+    for (y = 1; y <= m1->_maximumY; y++)
+    {
+      diff = getCellValue(m1, x, y) - getCellValue(m2, x, y);
+
+      if (diff != 0)
+      {
+        setCell(matrix, x, y, diff);
+      }
+    }
+
+  }
+
+  return matrix;
+}
+
+/**
+ * Cria a transposta de uma matriz
+ * @param  matrix [description]
+ * @return        [description]
+ */
+SparseMatrix* transpose(SparseMatrix* matrix)
+{
+  SparseMatrix* m = newSparseMatrix();
+  long x, y, cellValue;
+
+  for (x = 1; x <= matrix->_maximumX; x++)
+  {
+    for (y = 1; y <= matrix->_maximumY; y++)
+    {
+      cellValue = getCellValue(matrix, x, y);
+
+      if (cellValue != 0)
+      {
+        setCell(m, y, x, cellValue);
+      }
+    }
+  }
+
+  return m;
+}
 SparseMatrix* multiply(SparseMatrix* m1, SparseMatrix* m2);
-SparseMatrix* multiplyByScalar(SparseMatrix* matrix, long scalar);
+
+/**
+ * Multiplica uma matriz por um escalar
+ * @param  matrix [description]
+ * @param  scalar [description]
+ * @return        [description]
+ */
+SparseMatrix* multiplyByScalar(SparseMatrix* matrix, long scalar)
+{
+  SparseMatrix* m = newSparseMatrix();
+  long x, y, cellValue;
+
+  for (x = 1; x <= matrix->_maximumX; x++)
+  {
+    for (y = 1; y <= matrix->_maximumY; y++)
+    {
+      cellValue = getCellValue(matrix, x, y);
+
+      if (cellValue != 0)
+      {
+        cellValue *= scalar;
+        setCell(m, x, y, cellValue);
+      }
+    }
+  }
+
+  return m;
+}
