@@ -378,7 +378,47 @@ SparseMatrix* transpose(SparseMatrix* matrix)
 
   return m;
 }
-SparseMatrix* multiply(SparseMatrix* m1, SparseMatrix* m2);
+
+/**
+ * Multiplica duas matrizes
+ * @param  m1 [description]
+ * @param  m2 [description]
+ * @return    [description]
+ */
+SparseMatrix* multiply(SparseMatrix* m1, SparseMatrix* m2)
+{
+  SparseMatrix* result = newSparseMatrix();
+
+  // Verifica se colunas1 == linhas2
+  if (m1->_maximumX != m2->_maximumY)
+  {
+    printf("As matrizes a serem multiplicadas devem ter o mesmo número de colunas e linhas, respectivamente.\n");
+    exit(1);
+  }
+
+  long x, y, k;
+
+  // Quantidade de elementos de cada linha/coluna
+  long max = m1->_maximumX;
+
+  for (x = 1; x <= m1->_maximumY; x++)
+  {
+    for (y = 1; y <= m2->_maximumX; y++)
+    {
+      long cellValue = 0;
+
+      // a11.b11 + a21.b12 + a31.b13
+      for (k = 1; k <= max; k++)
+      {
+        cellValue += getCellValue(m1, k, x) * getCellValue(m2, y, k);
+      }
+
+      setCell(result, y, x, cellValue);
+    }
+  }
+
+  return result;
+}
 
 /**
  * Multiplica uma matriz por um escalar

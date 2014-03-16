@@ -27,7 +27,7 @@ int main(void)
   printf("=\n");
   print(sum(m1, m2));
 
-  printf("\nSubtração de matrizes:\n");  
+  printf("\nSubtração de matrizes:\n");
   print(m1);
   printf("-\n");
   print(m2);
@@ -38,6 +38,35 @@ int main(void)
   print(m1);
   printf("{T}\n");
   print(transpose(m1));
+
+  printf("\nMultiplicação de duas matrizes:\n");
+  print(m1);
+  printf("*\n");
+  print(m2);
+  printf("=\n");
+  print(multiply(m1, m2));
+
+  SparseMatrix* m3 = newSparseMatrix();
+  SparseMatrix* m4 = newSparseMatrix();
+  setCell(m3, 1, 1, 2);
+  setCell(m3, 2, 1, 3);
+  setCell(m3, 1, 2, 0);
+  setCell(m3, 2, 2, 1);
+  setCell(m3, 1, 3, -1);
+  setCell(m3, 2, 3, 4);
+
+  setCell(m4, 1, 1, 1);
+  setCell(m4, 2, 1, 2);
+  setCell(m4, 3, 1, 3);
+  setCell(m4, 1, 2, -2);
+  setCell(m4, 3, 2, 4);
+
+  printf("\nMultiplicação de duas matrizes:\n");
+  print(m3);
+  printf("*\n");
+  print(m4);
+  printf("=\n");
+  print(multiply(m3, m4));
 
   return 0;
 }
